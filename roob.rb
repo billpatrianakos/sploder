@@ -15,8 +15,8 @@ unless path
 end
 
 s3 = AWS::S3.new(
-	:access_key_id => 'AKIAJ3YMT6TGLY7YUW6A',
-	:secret_access_key => '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')
+	:access_key_id => 'CHANGE_ME',
+	:secret_access_key => 'CHANGE_ME')
 
 # Create a bucket
 
