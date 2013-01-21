@@ -2,14 +2,15 @@
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'sploder/version'
+require 'aws-sdk'
 
 Gem::Specification.new do |gem|
   gem.name          = "sploder"
   gem.version       = Sploder::VERSION
   gem.authors       = ["Bill Patrianakos"]
   gem.email         = ["bill@billpatrianakos.me"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
+  gem.description   = 'Sploder is the S3 uploader'
+  gem.summary       = 'Easily upload files to S3, create buckets, set ACL, and more'
   gem.homepage      = ""
 
   gem.files         = `git ls-files`.split($/)
