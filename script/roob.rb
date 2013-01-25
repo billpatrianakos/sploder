@@ -4,10 +4,15 @@ require 'aws-sdk'
 bucket = ARGV[0]
 file = ARGV[1]
 path = ARGV[2]
+acl = ARGV[3]
 
 unless bucket && file
 	puts "Usage: uppit <BUCKET_NAME> <FILE_NAME>"
 	exit 1
+end
+
+unless acl
+	acl = "public_read"
 end
 
 unless path
@@ -15,8 +20,8 @@ unless path
 end
 
 s3 = AWS::S3.new(
-	:access_key_id => 'CHANGE_ME',
-	:secret_access_key => 'CHANGE_ME')
+	:access_key_id => 'AKIAJ3YMT6TGLY7YUW6A',
+	:secret_access_key => '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')
 
 # Create a bucket
 
@@ -25,7 +30,7 @@ bucket = s3.buckets[bucket]
 
 basename = File.basename(file)
 upload = bucket.objects["#{path}/#{basename}"]
-upload.write(:file => file)
+upload.write(:file => file, :acl => acl)
 puts "Uploaded #{file} to: "
 puts upload.public_url
 
