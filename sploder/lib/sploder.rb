@@ -1,8 +1,6 @@
 require "sploder/version"
-require_relative "./sploder/base.rb"
+require "sploder/upload"
 
 module Sploder
-	def self.do
-		puts "This is the gem fucker."
-	end
+	# Code...
 end

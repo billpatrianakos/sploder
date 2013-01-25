@@ -1,7 +1,7 @@
 module Sploder
 	class Upload
-		def upload
-			puts "Upload function?"
+		def run
+			puts "Upload class loaded?"
 		end
 	end
 end
