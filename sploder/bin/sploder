@@ -8,9 +8,6 @@ rescue LoadError
 end
 
 # This line is what prints out "Upload class loaded" when installing
-require 'sploder/upload'
+#require 'sploder/upload'
 
-get '/' do
-	upload = Sploder::Upload.new
-	return upload.run
-end
+puts "Main Sploder executable running"

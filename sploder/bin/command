@@ -1,3 +1,12 @@
 #!/usr/bin/env ruby
 
-puts "Command baby"
+begin
+	require 'sploder'
+rescue LoadError
+	require 'rubygems'
+	require 'sploder'
+end
+
+upload = Sploder::Upload.new
+
+upload.whatsup

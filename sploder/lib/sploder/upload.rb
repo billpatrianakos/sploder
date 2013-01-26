@@ -1,6 +1,6 @@
 module Sploder
 	class Upload
-		def run
+		def whatsup
 			puts "Upload class loaded?"
 		end
 	end

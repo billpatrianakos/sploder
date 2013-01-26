@@ -1,6 +1,3 @@
-require "sploder/version"
 require "sploder/upload"
+require "sploder/CLI"
 
-module Sploder
-	# Code...
-end
