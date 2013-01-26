@@ -7,6 +7,8 @@ rescue LoadError
 	require 'sploder'
 end
 
-upload = Sploder::Upload.new
+#upload = Sploder::Upload.new
 
-upload.whatsup
+#upload.whatsup
+
+puts "Command running"

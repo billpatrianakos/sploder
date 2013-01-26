@@ -9,5 +9,10 @@ end
 
 # This line is what prints out "Upload class loaded" when installing
 #require 'sploder/upload'
+input = ARGV[0]
+puts "Main Sploder executable running with #{input}"
 
-puts "Main Sploder executable running"
+if ARGV[0] == "upload"
+	puts "Upload function"
+end
+
