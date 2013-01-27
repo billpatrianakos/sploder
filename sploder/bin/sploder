@@ -2,17 +2,49 @@
 
 begin
 	require 'sploder'
+	require 'trollop'
+	require 'highline/import'
 rescue LoadError
 	require 'rubygems'
 	require 'sploder'
+	require 'trollop'
+	require 'highline/import'
 end
 
-# This line is what prints out "Upload class loaded" when installing
-#require 'sploder/upload'
-input = ARGV[0]
-puts "Main Sploder executable running with #{input}"
+# This line is what prints the running message
+puts "Main Sploder executable running."
 
-if ARGV[0] == "upload"
-	puts "Upload function"
+opts = Trollop::options do
+	opt :upload, "Upload mode"
+	opt :setup, "Configure Sploder to work with your AWS account"
+	opt :list, "List your S3 buckets"
 end
 
+case
+when opts[:upload]
+	upload = Sploder::Upload.new
+	key 	= upload.load_settings['key']
+	secret 	= upload.load_settings['secret']
+	bucket 	= ARGV[0]
+	file 	= ARGV[1]
+	path 	= ARGV[2]
+	acl 	= ARGV[3]
+	upload.run(bucket, file, path, acl, key, secret)
+when opts[:setup]
+	puts "Setup mode:"
+	puts "Enter your AWS credentials in the prompts below. These will be saved so you will not need to run setup again."
+	puts "If your credentials change in the future run 'sploder --setup' again to update them in Sploder."
+
+	key 	= ask("Access key ID: ")
+	secret 	= ask("Secret access key: ")
+
+	setup = Sploder::Setup.new
+	setup.run(key, secret)
+else
+	puts "USAGE:"
+	puts "Run setup and enter your AWS credentials before using:"
+	puts "    sploder --setup OR sploder -s"
+	puts " "
+	puts "Upload a file:"
+	puts "    sploder --upload <BUCKET_NAME> <FILE> (Optional: <PATH> <ACL_POLICY>)"
+end

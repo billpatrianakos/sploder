@@ -1,3 +1,2 @@
 require "sploder/upload"
-require "sploder/CLI"
-
+require "sploder/setup"
