@@ -1,10 +1,7 @@
 # -*- encoding: utf-8 -*-
 lib = File.expand_path('../lib', __FILE__)
-#bin = File.expand_path('../bin', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'sploder/version'
-#require 'sploder/upload'
-#require 'aws-sdk'
 
 Gem::Specification.new do |gem|
   gem.name          = "sploder"

@@ -40,6 +40,12 @@ when opts[:setup]
 
 	setup = Sploder::Setup.new
 	setup.run(key, secret)
+when opts[:list]
+	list = Sploder::List.new
+	settings = Sploder::Upload.new
+	key 	= settings.load_settings['key']
+	secret 	= settings.load_settings['secret']
+	list.default(key, secret)
 else
 	puts "USAGE:"
 	puts "Run setup and enter your AWS credentials before using:"
@@ -47,4 +53,7 @@ else
 	puts " "
 	puts "Upload a file:"
 	puts "    sploder --upload <BUCKET_NAME> <FILE> (Optional: <PATH> <ACL_POLICY>)"
+	puts " "
+	puts "List available buckets:"
+	puts "    sploder --list"
 end
