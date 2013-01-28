@@ -1,9 +1,3 @@
----
-title: Sploder Readme File
-notebook: some notebook
-public: true
----
-
 # Sploder
 
 TODO: Write a gem description

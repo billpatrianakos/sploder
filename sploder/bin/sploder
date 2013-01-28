@@ -16,24 +16,32 @@ puts "Main Sploder executable running."
 
 opts = Trollop::options do
 	opt :upload, "Upload mode"
+	opt :path, "   A new or existing path within your S3 bucket to upload to (Optional)", :type => :string
+	opt :acl, "   ACL permission setting for the file being uploaded (Optional)", :type => :string
 	opt :setup, "Configure Sploder to work with your AWS account"
 	opt :list, "List your S3 buckets"
+	opt :explore, "Explore the contents of a bucket"
+	opt :prefix, "   Object prefix", :type => :string
+	opt :create, "Create a new bucket"
+	opt :name, "    Name of new bucket", :type => :string
 end
 
 case
 when opts[:upload]
+
 	upload = Sploder::Upload.new
 	key 	= upload.load_settings['key']
 	secret 	= upload.load_settings['secret']
 	bucket 	= ARGV[0]
 	file 	= ARGV[1]
-	path 	= ARGV[2]
-	acl 	= ARGV[3]
+	path 	= opts[:path]
+	acl 	= opts[:acl]
 	upload.run(bucket, file, path, acl, key, secret)
 when opts[:setup]
 	puts "Setup mode:"
 	puts "Enter your AWS credentials in the prompts below. These will be saved so you will not need to run setup again."
 	puts "If your credentials change in the future run 'sploder --setup' again to update them in Sploder."
+	puts " "
 
 	key 	= ask("Access key ID: ")
 	secret 	= ask("Secret access key: ")
@@ -46,13 +54,27 @@ when opts[:list]
 	key 	= settings.load_settings['key']
 	secret 	= settings.load_settings['secret']
 	list.default(key, secret)
+when opts[:explore]
+	listobjects 	= Sploder::List.new
+	settings 		= Sploder::Upload.new
+	key 		= settings.load_settings['key']
+	secret 		= settings.load_settings['secret']
+	listobjects.list_bucket(key, secret)
+when opts[:create]
+	unless opts[:name]
+		puts "Please enter a name for your new bucket"
+		exit 1
+	end
+	name = opts[:name]
+	key 		= settings.load_settings['key']
+	secret 		= settings.load_settings['secret']
 else
 	puts "USAGE:"
 	puts "Run setup and enter your AWS credentials before using:"
 	puts "    sploder --setup OR sploder -s"
 	puts " "
 	puts "Upload a file:"
-	puts "    sploder --upload <BUCKET_NAME> <FILE> (Optional: <PATH> <ACL_POLICY>)"
+	puts "    sploder --upload <BUCKET_NAME> <FILE> (Optional: -p <PATH> -a <ACL_POLICY>)"
 	puts " "
 	puts "List available buckets:"
 	puts "    sploder --list"

@@ -23,7 +23,7 @@ module Sploder
 
 			bucket = s3.buckets[bucket]
 			basename = File.basename(file)
-			upload = bucket.objects["#{path}/#{basename}"]
+			upload = bucket.objects["#{path}#{basename}"]
 			upload.write(:file => file, :acl => acl)
 			puts "Uploaded #{file} to: "
 			puts upload.public_url

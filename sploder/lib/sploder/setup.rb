@@ -8,5 +8,13 @@ module Sploder
 			end
 			puts "Settings saved"
 		end
+
+		def check
+			file = File.expand_path('.sploder', '~')
+			unless File.exist?(file)
+				puts "Please run 'sploder --setup' before using Sploder"
+				exit 1
+			end
+		end
 	end
 end
