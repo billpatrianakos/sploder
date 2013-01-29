@@ -1,3 +1,5 @@
+require 'yaml'
+
 module Sploder
 	class Setup
 		def run (key, secret)
@@ -9,12 +11,19 @@ module Sploder
 			puts "Settings saved"
 		end
 
-		def check
+		def load_settings
+			settings_file = File.expand_path('.sploder', '~')
+			settings = YAML.load_file(settings_file)
+			return settings
+		end
+
+		def settings_exist
 			file = File.expand_path('.sploder', '~')
 			unless File.exist?(file)
 				puts "Please run 'sploder --setup' before using Sploder"
 				exit 1
 			end
+			return true
 		end
 	end
 end

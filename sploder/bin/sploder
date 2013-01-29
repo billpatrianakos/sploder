@@ -15,23 +15,28 @@ end
 puts "Main Sploder executable running."
 
 opts = Trollop::options do
-	opt :upload, "Upload mode"
-	opt :path, "   A new or existing path within your S3 bucket to upload to (Optional)", :type => :string
-	opt :acl, "   ACL permission setting for the file being uploaded (Optional)", :type => :string
+	opt :upload, "Upload a file to S3"
+	opt :path, "   (Optional) A new or existing path within your S3 bucket to upload to", :type => :string
+	opt :acl, "   (Optional) ACL permission setting for the file being uploaded. Default is public_read", :type => :string
 	opt :setup, "Configure Sploder to work with your AWS account"
 	opt :list, "List your S3 buckets"
 	opt :explore, "Explore the contents of a bucket"
 	opt :prefix, "   Object prefix", :type => :string
 	opt :create, "Create a new bucket"
-	opt :name, "    Name of new bucket", :type => :string
+	opt :name, "    Name of bucket (Used in all functions that take bucket names)", :type => :string
+	opt :delete, "Delete an existing bucket. WARNING: This deletes the entire contents of your bucket"
+
 end
+
+# Initialize the settings class to later check for .sploder file
+settings = Sploder::Setup.new
 
 case
 when opts[:upload]
-
+	settings.settings_exist # Check that Sploder has been set up
 	upload = Sploder::Upload.new
-	key 	= upload.load_settings['key']
-	secret 	= upload.load_settings['secret']
+	key 	= settings.load_settings['key']
+	secret 	= settings.load_settings['secret']
 	bucket 	= ARGV[0]
 	file 	= ARGV[1]
 	path 	= opts[:path]
@@ -49,18 +54,19 @@ when opts[:setup]
 	setup = Sploder::Setup.new
 	setup.run(key, secret)
 when opts[:list]
+	settings.settings_exist # Check that Sploder has been set up
 	list = Sploder::List.new
-	settings = Sploder::Upload.new
 	key 	= settings.load_settings['key']
 	secret 	= settings.load_settings['secret']
 	list.default(key, secret)
 when opts[:explore]
+	settings.settings_exist # Check that Sploder has been set up
 	listobjects 	= Sploder::List.new
-	settings 		= Sploder::Upload.new
 	key 		= settings.load_settings['key']
 	secret 		= settings.load_settings['secret']
 	listobjects.list_bucket(key, secret)
 when opts[:create]
+	settings.settings_exist # Check that Sploder has been set up
 	unless opts[:name]
 		puts "Please enter a name for your new bucket"
 		exit 1
@@ -68,6 +74,21 @@ when opts[:create]
 	name = opts[:name]
 	key 		= settings.load_settings['key']
 	secret 		= settings.load_settings['secret']
+	newbucket 	= Sploder::Bucket.new
+	newbucket.create(name, key, secret)
+when opts[:delete]
+	settings.settings_exist # Check that Sploder has been set up
+	bucket_name 	= ask("Enter the name of the bucket you want to delete: ")
+	puts "WARNING: This will delete your bucket and all its contents."
+	confirm 		= ask("Are you sure you want to continue? [y]/[n] ")
+	unless confirm == 'y'
+		puts "Cancelled bucket deletion. Phew, that was a close one!"
+		exit 1
+	end
+	key 		= settings.load_settings['key']
+	secret 		= settings.load_settings['secret']
+	bucket 		= Sploder::Bucket.new
+	bucket.delete(bucket_name, key, secret)
 else
 	puts "USAGE:"
 	puts "Run setup and enter your AWS credentials before using:"

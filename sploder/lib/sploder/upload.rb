@@ -28,11 +28,5 @@ module Sploder
 			puts "Uploaded #{file} to: "
 			puts upload.public_url
 		end
-
-		def load_settings
-			settings_file = File.expand_path('.sploder', '~')
-			settings = YAML.load_file(settings_file)
-			return settings
-		end
 	end
 end
