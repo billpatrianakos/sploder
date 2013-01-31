@@ -10,7 +10,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["bill@billpatrianakos.me"]
   gem.description   = 'Sploder is the S3 uploader'
   gem.summary       = 'Easily upload files to S3, create buckets, set ACL, and more'
-  gem.homepage      = ""
+  gem.homepage      = "http://sploder.cleverlabs.info"
 
   gem.files         = `git ls-files`.split($/)
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
