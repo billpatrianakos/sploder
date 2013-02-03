@@ -118,12 +118,9 @@ when opts[:nohost]
 	disable.end_hosting(bucket_name, index, error, key, secret)
 else
 	puts "USAGE:"
-	puts "Run setup and enter your AWS credentials before using:"
-	puts "    sploder --setup OR sploder -s"
-	puts " "
-	puts "Upload a file:"
-	puts "    sploder --upload <BUCKET_NAME> <FILE> (Optional: -p <PATH> -a <ACL_POLICY>)"
-	puts " "
-	puts "List available buckets:"
-	puts "    sploder --list"
+	puts "Available flags: --list, --upload, --create, --delete , --setup, --explore"
+	puts ""
+	puts "Full documentation:"
+	puts "http://sploder.cleverlabs.info"
+	puts "or run `sploder -h`"
 end

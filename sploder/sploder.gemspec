@@ -12,7 +12,8 @@ Gem::Specification.new do |gem|
   gem.summary       = 'Easily upload files to S3, create buckets, set ACL, and more'
   gem.homepage      = "http://sploder.cleverlabs.info"
 
-  gem.files         = `git ls-files`.split($/)
+  #gem.files         = `git ls-files`.split($/)
+  gem.files         = Dir.glob("{bin,lib}/**/*")
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
 
