@@ -25,6 +25,8 @@ opts = Trollop::options do
 	opt :create, "Create a new bucket"
 	opt :name, "    Name of bucket (Used in all functions that take bucket names)", :type => :string
 	opt :delete, "Delete an existing bucket. WARNING: This deletes the entire contents of your bucket"
+	opt :website, "Enables webhosting for the specified bucket"
+	opt :options, "Use optional settings. Not all operations support this flag"
 
 end
 
@@ -62,9 +64,11 @@ when opts[:list]
 when opts[:explore]
 	settings.settings_exist # Check that Sploder has been set up
 	listobjects 	= Sploder::List.new
-	key 		= settings.load_settings['key']
-	secret 		= settings.load_settings['secret']
-	listobjects.list_bucket(key, secret)
+	key 			= settings.load_settings['key']
+	secret 			= settings.load_settings['secret']
+	bucket_name 	= opts[:name]
+	prefix 			= opts[:prefix]
+	listobjects.list_bucket_contents(bucket_name, prefix, key, secret)
 when opts[:create]
 	settings.settings_exist # Check that Sploder has been set up
 	unless opts[:name]
@@ -89,6 +93,29 @@ when opts[:delete]
 	secret 		= settings.load_settings['secret']
 	bucket 		= Sploder::Bucket.new
 	bucket.delete(bucket_name, key, secret)
+when opts[:website]
+	settings.settings_exist # Check if settings file exists
+	key 		= settings.load_settings['key']
+	secret 		= settings.load_settings['secret']
+	bucket_name = opts[:name]
+	index 		= ARGV[0]
+	error 		= ARGV[1]
+	if opts[:options]
+		unless index && error
+			puts "Please enter BOTH an index AND error page to enable hosting."
+			puts "Example: sploder --website -n mybucket index.html error.html"
+			exit 1
+		end
+	end
+	website = Sploder::Bucket.new
+	website.host_website(bucket_name, index, error, key, secret)
+when opts[:nohost]
+	settings.settings_exist # Make sure settings are set
+	key 			= settings.load_settings['key']
+	secret 			= settings.load_settings['secret']
+	bucket_name 	= opts[:name]
+	disable = Sploder::Bucket.new
+	disable.end_hosting(bucket_name, index, error, key, secret)
 else
 	puts "USAGE:"
 	puts "Run setup and enter your AWS credentials before using:"
