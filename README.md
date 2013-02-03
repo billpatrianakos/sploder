@@ -1,5 +1,7 @@
 # Sploder (The S3 Uploader)
 
+__Full docs available from [the official website](http://sploder.cleverlabs.info)__
+
 Sploder is a CLI Ruby Gem whose main purpose is to upload files to Amazon S3. Them gem also lets you do all sorts of cool things like creating new buckets, listing buckets and files, setting ACL policies, and more.
 
 Sploder was born from a really simple Ruby script which isn't updated anymore but is in this repo for (my own selfish) historical reasons. The Gem source and its documentation are within the `sploder` folder.

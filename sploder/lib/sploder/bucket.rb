@@ -20,7 +20,7 @@ module Sploder
 		end
 
 		# The following methods do nothing. They will in the future.
-		def host_website (bucket_name, index, error, key, secret)
+		def host_website (bucket_name, index_doc, error_doc, key, secret)
 			s3 = AWS::S3.new(
 				:access_key_id => key,
 				:secret_access_key => secret)
@@ -28,18 +28,25 @@ module Sploder
 			# Get the bucket
 			bucket = s3.buckets[bucket_name]
 
-			# Set default index and error documents
-			unless index
-				index = "index.html"
+			unless bucket.exists?
+				puts "Looks like that bucket does not exist in your account."
+				puts "Would you like to create it?"
+				puts "Just run 'sploder --create -n #{bucket_name}'"
+				exit 1
 			end
 
-			unless error
-				error = "error.html"
+			# Set default index and error documents
+			unless index_doc
+				index_doc = 'index.html'
+			end
+
+			unless error_doc
+				error_doc = 'error.html'
 			end
 
 			bucket.configure_website do |cfg|
-				cfg.index_document_suffix = index
-				cfg.error_document_key = error
+				cfg.index_document_suffix = index_doc
+				cfg.error_document_key = error_doc
 			end
 
 			puts "All set! #{bucket_name} is now configured as a web host"

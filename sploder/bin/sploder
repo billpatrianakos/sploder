@@ -12,7 +12,7 @@ rescue LoadError
 end
 
 # This line is what prints the running message
-puts "Main Sploder executable running."
+puts "Sploder is sploding..."
 
 opts = Trollop::options do
 	opt :upload, "Upload a file to S3"
@@ -27,7 +27,7 @@ opts = Trollop::options do
 	opt :delete, "Delete an existing bucket. WARNING: This deletes the entire contents of your bucket"
 	opt :website, "Enables webhosting for the specified bucket"
 	opt :options, "Use optional settings. Not all operations support this flag"
-
+	opt :file, "Get information about a file and delete or download it"
 end
 
 # Initialize the settings class to later check for .sploder file
@@ -72,7 +72,8 @@ when opts[:explore]
 when opts[:create]
 	settings.settings_exist # Check that Sploder has been set up
 	unless opts[:name]
-		puts "Please enter a name for your new bucket"
+		puts "Please enter a name for your new bucket using the -n flag"
+		puts "Example: sploder --create -n my_new_bucket"
 		exit 1
 	end
 	name = opts[:name]
@@ -98,17 +99,17 @@ when opts[:website]
 	key 		= settings.load_settings['key']
 	secret 		= settings.load_settings['secret']
 	bucket_name = opts[:name]
-	index 		= ARGV[0]
-	error 		= ARGV[1]
+	index_doc 		= ARGV[0]
+	error_doc 		= ARGV[1]
 	if opts[:options]
-		unless index && error
+		unless index_doc && error_doc
 			puts "Please enter BOTH an index AND error page to enable hosting."
 			puts "Example: sploder --website -n mybucket index.html error.html"
 			exit 1
 		end
 	end
 	website = Sploder::Bucket.new
-	website.host_website(bucket_name, index, error, key, secret)
+	website.host_website(bucket_name, index_doc, error_doc, key, secret)
 when opts[:nohost]
 	settings.settings_exist # Make sure settings are set
 	key 			= settings.load_settings['key']
@@ -116,6 +117,25 @@ when opts[:nohost]
 	bucket_name 	= opts[:name]
 	disable = Sploder::Bucket.new
 	disable.end_hosting(bucket_name, index, error, key, secret)
+when opts[:file]
+	settings.settings_exist # Make sure Sploder is set up
+	key 		= settings.load_settings['key']
+	secret 		= settings.load_settings['secret']
+	bucket_name = ARGV[0]
+	file 		= ARGV[1]
+	operation 	= ARGV[2]
+	unless operation.nil?
+		if operation == 'download'
+			download = Sploder::Object.new
+			download.download_file(bucket_name, file, key, secret)
+		elsif operation == 'delete'
+			delete = Sploder::Object.new
+			delete.delete_file(bucket_name, file, key, secret)
+		end
+		exit 0
+	end
+	url = Sploder::Object.new
+	url.get_url(bucket_name, file, key, secret)
 else
 	puts "USAGE:"
 	puts "Available flags: --list, --upload, --create, --delete , --setup, --explore"

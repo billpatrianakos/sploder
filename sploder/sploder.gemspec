@@ -8,8 +8,8 @@ Gem::Specification.new do |gem|
   gem.version       = Sploder::VERSION
   gem.authors       = ["Bill Patrianakos"]
   gem.email         = ["bill@billpatrianakos.me"]
-  gem.description   = 'Sploder is the S3 uploader'
-  gem.summary       = 'Easily upload files to S3, create buckets, set ACL, and more'
+  gem.description   = 'Sploder lets you work with S3 buckets from the command line'
+  gem.summary       = 'Easily upload files to S3, create buckets, delete them, see bucket contents, set ACL, and more'
   gem.homepage      = "http://sploder.cleverlabs.info"
 
   #gem.files         = `git ls-files`.split($/)

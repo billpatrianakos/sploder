@@ -5,7 +5,8 @@ module Sploder
 	class Upload
 		def run (bucket, file, path, acl, key, secret)
 			unless bucket && file
-				puts "Usage: sploder <BUCKET_NAME> <FILE_NAME> | Optional: <S3_PATH> <ACL_POLICY>"
+				puts "You must at least enter a bucket name and relative or absolute path to the file to upload."
+				puts "USAGE: sploder --upload BUCKET_NAME FILE_NAME | Optional: -p S3_PATH -a ACL_POLICY"
 				exit 1
 			end
 
@@ -22,6 +23,13 @@ module Sploder
 				:secret_access_key => secret)
 
 			bucket = s3.buckets[bucket]
+			unless bucket.exists?
+				puts "Looks like that bucket does not exist in your account."
+				puts "Would you like to create it?"
+				puts "Just run 'sploder --create -n #{bucket}'"
+				exit 1
+			end
+
 			basename = File.basename(file)
 			upload = bucket.objects["#{path}#{basename}"]
 			upload.write(:file => file, :acl => acl)

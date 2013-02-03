@@ -85,7 +85,96 @@ If you want to confirm your bucket has been created (I'm not sure why you wouldn
 
 ### Exploring bucket contents
 
-`--explore` or `-e` invokes the bucket explorer feature. This feature is under heavy development and doesn't work. But I'm still shipping it because I know you're all smart enough to add on to the Sploder::Bucket class methods for exploring buckets to make it work. This is a feature that I want a lot so you can be sure I'll be adding this feature soon.
+`--explore` or `-e` invokes the bucket explorer feature. This operation requires you to use the `-n` or `--name` flag to specify which bucket you want to explore. Using it with only a bucket name will show you a complete list of all files in all subfolders in your S3 bucket. Depending on how many files you have stored this could be a real lot of output. Unless you have small buckets you may want to use it with the prefix (`--prefix` or `-r`) flags to narrow down your search.
+
+To see files and folders within a specified directory you'd use the `--prefix` flag as described above. You can explore as many levels deep as you want. See examples below for more.
+
+__Examples__
+
+*Explore the entire contents of a bucket:*
+
+```
+$ sploder --explore -n mybucket
+# Sample output below
+Sploder is sploding...
+fileinroot.txt
+blog_posts/
+blog_posts/my_image.jpg
+blog_posts/2013/
+blog_posts/2013/january/image1.png
+photos/
+photos/shot1.jpg
+```
+
+The important thing to notice in the above example is that not specifying a specific bucket prefix, or directory path as we know them, S3 returns a list of every single file, folder, and their contents no matter how many levels deep they go.
+
+*Exploring a specific directory within your bucket: (uses the `--prefix` or `-r` flags)* 
+
+```
+$ sploder --explore -n mybucket -r blog_posts
+Sploder is sploding...
+blog_posts/file1.txt
+blog_posts/file2.png
+blog_posts/2013/
+blog_posts/2013/photo.gif
+blog_posts/2013/january/
+blog_posts/2013/january/file.ext
+```
+
+The important thing to notice from the above example is thatS3 returns a list of every last file and folder plus their contents when you specify a prefix.
+
+Whenever possible, be as specific as possible when exploring the contents of your buckets. The broader your search, the more results Sploder returns, and the harder to sort they may be. For most people this is not a problem but if you have very large number of files and paths within a bucket then please be aware of this and explore your buckets accordingly.
+
+*Being specific when exploring a bucket:*
+
+```
+$ sploder --explore -n mybucket -r photos/2013/family_photos
+Sploder is sploding...
+photos/2013/family_photos/mom/
+photos/2013/family_photos/dad/being-silly.jpg
+```
+
+Obviously this is a made up example but the point is that being more specific will return less results and make it easier for you to manage your results.
+
+### Getting file URLs
+
+You can get the public URL of a previously uploaded file using the `--file` flag. The `--file` operation takes up to 3 arguments all of which do not have their own flags. The following example has 2 parts. The first part lists the contents of a bucket to search for a particular file. The second part uses the output to get that file's URL. If you already know the path within S3 to the file you want you can skip part 1.
+
+__Part 1: Search for file__
+
+```
+sploder --explore -n mybucket -r photos
+# Outputs:
+Sploder is sploding...
+photos/me.jpg
+photos/hawaii/
+...
+```
+
+Here we have a few files to choose from. For this example we'll use 'me.jpg'.
+
+__Part 2: Get the public URL of a given file__
+
+```
+sploder --file mybucket photos/me.jpg
+# Outputs:
+Sploder is sploding...
+Your file's public URL:
+https://mybucket.s3.amazonaws.com/photos/me.jpg
+```
+
+### Deleting a file
+
+Deleting a file also uses the `--file` or `-f` flag. It's similar to getting the public URL with one extra paramter. All arguments passed to `--file` need to be in this exact order or they will not work: bucket name, file path within S3, and the optional operation (currently only 'delete' is supported).
+
+Example: In this example we'll use the file from our previous example of getting public URLs
+
+```
+sploder --file mybucket photos/me.jpg delete
+# Output
+Sploder is sploding...
+Deleted photos/me.jpg from mybucket
+```
 
 ## Support
 

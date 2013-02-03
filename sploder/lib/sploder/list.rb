@@ -19,6 +19,13 @@ module Sploder
 			# Access the specified bucket
 			bucket = s3.buckets[bucket_name]
 
+			unless bucket.exists?
+				puts "Looks like that bucket does not exist in your account."
+				puts "Would you like to create it?"
+				puts "Just run 'sploder --create -n #{bucket_name}'"
+				exit 1
+			end
+
 			if prefix.nil?
 				bucket.objects.each do |obj|
 					puts obj.key
